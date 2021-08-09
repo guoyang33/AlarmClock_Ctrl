@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:padding="4dip"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent">
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:paddingTop="16dip"
+      android:text="Notificator"
+      android:textSize="24dip"
+      android:textStyle="bold" />
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:paddingTop="16dip"
+      android:text="Version 2"
+      android:textSize="16dip" />
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:paddingTop="16dip"
+      android:text="Copyright \u00a9 Jan 2nd, 2020 Larry"
+      android:textSize="24sp" />
+
+  <TextView
+      android:layout_width="323dp"
+      android:layout_height="555dp"
+      android:layout_gravity="center"
+      android:paddingTop="8dip"
+      android:text="設定時間相關\n設定的兩個提醒\n請介於上午3:30分\n到\n下午11:59分之間\n\n更新項目\n1. 新增補簽到功能\n2. 修正滿週提醒錯誤"
+      android:textSize="30sp" />
+
+
+</LinearLayout>
+
