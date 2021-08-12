@@ -86,9 +86,6 @@ public class Editt extends AppCompatActivity {
     }
 
     @Override
-    protected Dialog onCreateView()
-
-    @Override
     protected Dialog onCreateDialog(int id)
     {
         if (DATE_DIALOG_ID == id)

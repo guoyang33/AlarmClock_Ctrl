@@ -86,7 +86,7 @@ public class AlarmNotification extends Activity {
         notify_manager.notify(0, notification_popup);
         start(getIntent());
         WebView tota = findViewById(R.id.total);
-        tota.loadUrl("http://120.108.119.166/App_2nd/Ctrl_daily/redirect.php?id=" + user_id);
+        tota.loadUrl("http://120.108.111.131/App_2nd/Ctrl_daily/redirect.php?id=" + user_id);
         GetDate();
     }
 
@@ -204,7 +204,7 @@ public class AlarmNotification extends Activity {
                     params.put("uploadedfile", myFile, "text/csv");
                     AsyncHttpClient client = new AsyncHttpClient();
                     Log.d("where", "Try to post file : " + s);
-                    client.post(this, "http://120.108.119.166/App_2nd/receive_file_finish.php?id=" + user_id, params, new AsyncHttpResponseHandler() {
+                    client.post(this, "http://120.108.111.131/App_2nd/receive_file_finish.php?id=" + user_id, params, new AsyncHttpResponseHandler() {
                         @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {

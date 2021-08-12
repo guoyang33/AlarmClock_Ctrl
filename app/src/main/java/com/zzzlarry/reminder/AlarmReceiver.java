@@ -34,19 +34,6 @@ import java.util.Date;
 public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "AppName:MyWakeLockTag");
-        wl.acquire();
-
-//        Intent newIntent = new Intent(context, MainActivity.class);
-//        Alarm alarm = new Alarm(context);
-//        alarm.fromIntent(intent);
-//        alarm.toIntent(newIntent);
-//        newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//        context.startActivity(newIntent);
-
-//        Toast.makeText(context, "Alarm !!!!!!!!!!", Toast.LENGTH_LONG).show();
-
         Date dNow = new Date();
         @SuppressLint("SimpleDateFormat") SimpleDateFormat ft = new SimpleDateFormat("HH");
         String now_time = ft.format(dNow);
@@ -71,7 +58,6 @@ public class AlarmReceiver extends BroadcastReceiver {
             Log.i(TAG, "AlarmReceiver.onReceive('" + alarm.getTitle() + "')");
             context.startActivity(newIntent);
         }
-        wl.release();
     }
 }
 
