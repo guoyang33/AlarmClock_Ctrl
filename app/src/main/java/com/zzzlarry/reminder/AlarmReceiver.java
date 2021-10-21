@@ -20,44 +20,99 @@
 package com.zzzlarry.reminder;
 
 import android.annotation.SuppressLint;
-import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Vibrator;
+import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
-import android.os.PowerManager;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class AlarmReceiver extends BroadcastReceiver {
+
+    public static Ringtone mRingtone;
+    public static Vibrator mVibrator;
+    private final long[] mVibratePattern = {0, 500, 5000};
+    private boolean mVibrate;
+    private Uri mAlarmSound;
+    private long mPlayTime;
+
     @Override
     public void onReceive(Context context, Intent intent) {
+        int notification_id = 111;
+
         Date dNow = new Date();
         @SuppressLint("SimpleDateFormat") SimpleDateFormat ft = new SimpleDateFormat("HH");
         String now_time = ft.format(dNow);
         Log.d("where", now_time);
+
+        Intent newIntent;
+
         if ("03".equals(now_time)) {
-            Intent newIntent = new Intent(context, MainActivity.class);
+            newIntent = new Intent(context, MainActivity.class);
             Alarm alarm = new Alarm(context);
             alarm.fromIntent(intent);
             alarm.toIntent(newIntent);
             newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             String TAG = "AlarmMe";
             Log.i(TAG, "AlarmReceiver.onReceive('" + alarm.getTitle() + "')");
-            context.startActivity(newIntent);
         } else {
             //daily notification
-            Intent newIntent = new Intent(context, AlarmNotification.class);
+            newIntent = new Intent(context, AlarmNotification.class);
             Alarm alarm = new Alarm(context);
             alarm.fromIntent(intent);
             alarm.toIntent(newIntent);
             newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             String TAG = "AlarmMe";
             Log.i(TAG, "AlarmReceiver.onReceive('" + alarm.getTitle() + "')");
-            context.startActivity(newIntent);
+
+            readPreferences(context);
+            mRingtone = RingtoneManager.getRingtone(context, mAlarmSound);
+            mRingtone.play();
+
+            if (mVibrate)
+                mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+            mVibrator.vibrate(mVibratePattern, -1);
         }
+
+        PendingIntent pi = PendingIntent.getActivity(context, 0, newIntent, 0);
+        Notification notification = new NotificationCompat.Builder(context, "zzzlarry")
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setContentTitle("Fiszy your Alarm is on")
+                .setContentText("Click Me")
+                .setAutoCancel(true)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setContentIntent(pi)
+                .build();
+        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
+        notificationManagerCompat.notify(notification_id, notification);
     }
+
+    private void readPreferences(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        mAlarmSound = Uri.parse(prefs.getString("alarm_sound_pref", "DEFAULT_RINGTONE_URI"));
+        mVibrate = prefs.getBoolean("vibrate_pref", true);
+        mPlayTime = (long) Integer.parseInt(prefs.getString("alarm_play_time_pref", "30")) * 1000;
+    }
+
+    public static void stop() {
+        mRingtone.stop();
+        mVibrator.cancel();
+    }
+
 }
 

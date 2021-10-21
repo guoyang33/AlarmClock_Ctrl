@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.Notification.Builder;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -18,6 +19,7 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -56,40 +58,46 @@ public class AlarmNotification extends Activity {
     private PlayTimerTask mTimerTask;
 
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
+        setContentView(R.layout.notification);
+
+        AlarmReceiver.stop();
 
         getWindow().addFlags(
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
                         WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                         WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
-        setContentView(R.layout.notification);
         mDateTime = new DateTime(this);
         mTextView = findViewById(R.id.alarm_title_text);
         //set up notification manager
         NotificationManager notify_manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         //make notification parameter
-        Notification notification_popup = new Builder(this).setContentTitle("Fiszy your Alarm is on").setContentText("Click Me")
-                .setAutoCancel(true)
-                .setSmallIcon(R.drawable.ic_launcher)
-                .build();
+//        Notification notification_popup = null;
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+//            notification_popup = new Builder(this, "zzzlarry")
+//                    .setContentTitle("Fiszy your Alarm is on")
+//                    .setContentText("Click Me")
+//                    .setAutoCancel(true)
+//                    .setSmallIcon(R.drawable.ic_launcher)
+//                    .build();
+//        }
         readPreferences();
 
         mRingtone = RingtoneManager.getRingtone(getApplicationContext(), mAlarmSound);
         if (mVibrate)
             mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         assert notify_manager != null;
-        notify_manager.notify(0, notification_popup);
+//        notify_manager.notify(0, notification_popup);
         start(getIntent());
         WebView tota = findViewById(R.id.total);
         tota.loadUrl("http://120.108.111.131/App_2nd/Ctrl_daily/redirect.php?id=" + user_id);
         GetDate();
     }
-
 
     @Override
     protected void onDestroy() {
@@ -121,9 +129,9 @@ public class AlarmNotification extends Activity {
         mTimerTask = new PlayTimerTask();
         mTimer = new Timer();
         mTimer.schedule(mTimerTask, mPlayTime);
-        mRingtone.play();
-        if (mVibrate)
-            mVibrator.vibrate(mVibratePattern, -1);
+//        mRingtone.play();
+//        if (mVibrate)
+//            mVibrator.vibrate(mVibratePattern, -1);
     }
 
     private void stop() {
@@ -153,7 +161,7 @@ public class AlarmNotification extends Activity {
 
     private void addNotification(Alarm alarm) {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notification;
+        NotificationCompat.Builder notification;
         PendingIntent activity;
         Intent intent;
 
@@ -163,18 +171,18 @@ public class AlarmNotification extends Activity {
         intent.setAction(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
 
-        activity = PendingIntent.getActivity(this, (int) alarm.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        activity = PendingIntent.getActivity(this, (int) alarm.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-        notification = builder
-                .setContentIntent(activity)
-                .setSmallIcon(R.drawable.ic_notification)
-                .setAutoCancel(true)
-                .setContentTitle("Missed alarm: " + alarm.getTitle())
-                .setContentText(mDateTime.formatDetails(alarm))
-                .build();
-
-        notificationManager.notify((int) alarm.getId(), notification);
+//        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "zzzlarry");
+//        notification = builder
+//                .setContentIntent(activity)
+//                .setSmallIcon(R.drawable.ic_notification)
+//                .setAutoCancel(true)
+//                .setContentTitle("Missed alarm: " + alarm.getTitle())
+//                .setContentText(mDateTime.formatDetails(alarm));
+//
+//        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+//        notificationManagerCompat.notify(123, notification.build());
     }
 
     @Override
@@ -233,7 +241,7 @@ public class AlarmNotification extends Activity {
 
     private void GetDate() {
         AsyncHttpClient client = new AsyncHttpClient();
-        client.get("http://120.108.119.166/App_2nd/Ctrl_daily/Data_MakeUp.php?uid=" + user_id, new TextHttpResponseHandler() {
+        client.get("http://120.108.111.131/App_2nd/Ctrl_daily/Data_MakeUp.php?uid=" + user_id, new TextHttpResponseHandler() {
             @Override
             public void onStart() {
                 // called before request is started

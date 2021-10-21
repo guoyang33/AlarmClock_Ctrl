@@ -15,14 +15,16 @@
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:persistent="true">
 
         <receiver android:name=".BootReceiver">
             <intent-filter android:priority="1000">
@@ -49,17 +51,41 @@
         <activity
             android:name=".Preferences"
             android:label="Preferences" />
+        <activity
+            android:name=".AppUsageLauncher"
+            android:label="App Usage Launcher" />
 
-        <receiver android:process=":remote" android:name="com.zzzlarry.reminder.AlarmReceiver">
-            <intent-filter>
+        <activity
+            android:name=".AppUsageDetector"
+            android:label="App Usage Detector" />
+
+        <!--靜態註冊-->
+        <receiver
+            android:name=".AlarmReceiver"
+            android:enabled="true">
+            <intent-filter android:priority="1000">
                 <action android:name="testalarm0" />
                 <action android:name="testalarm1" />
             </intent-filter>
         </receiver>
 
+        <receiver
+            android:name=".AppUsageDetectReceiver"
+            android:enabled="true">
+        </receiver>
+
         <activity
             android:name=".Editt"
             android:label="Edit Alarm" />
+
+        <service
+            android:name=".NotificationCollectorService"
+            android:label="notification collector service"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
 
         <uses-library
             android:name="org.apache.http.legacy"

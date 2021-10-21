@@ -118,5 +118,8 @@
     <string name="menu_item_new">New</string>
     <string name="menu_item_save">Save</string>
     <string name="menu_item_delete">Cancel</string>
+    <string name="title">Title</string>
+    <string name="input_a_title">Input a title</string>
+    <string name="alarm">Alarm</string>
 
 </resources>

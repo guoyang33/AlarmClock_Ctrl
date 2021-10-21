@@ -1,15 +1,22 @@
 package com.zzzlarry.reminder;
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.Settings;
+import android.service.notification.StatusBarNotification;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -37,14 +44,18 @@ import com.loopj.android.http.TextHttpResponseHandler;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Calendar;
 
 import cz.msebera.android.httpclient.Header;
 
+import static android.provider.Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS;
 import static android.widget.Toast.LENGTH_LONG;
 
 
 public class MainActivity extends AppCompatActivity {
-    final String user_id = "user1092250";//user001-user100非網癮
+    static final String user_id = "user1092250";//user001-user100非網癮
+
+    private static final String ACTION_NOTIFICATION_LISTENER_SETTINGS = "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS";
 
     Button btn_rank;
     Button btn_alltime;
@@ -90,12 +101,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_main);
+
+        createNotificationChannel();
+        
         btn_rank = findViewById(R.id.button_rank);
         btn_alltime = findViewById(R.id.button_alltime);
         mAlarmList = (ListView) findViewById(R.id.alarm_list);
@@ -132,6 +145,15 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        // 監聽通知權限
+        String string = Settings.Secure.getString(getContentResolver(),
+                "enabled_notification_listeners");
+        if (!string.contains(NotificationCollectorService.class.getName())) {
+            startActivity(new Intent(
+                    "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
+        }
+        startAppUsageDetect();
 
         //檢查是否取得權限
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
@@ -197,6 +219,19 @@ public class MainActivity extends AppCompatActivity {
         assert cursor != null;
         cursor.close();
 
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name  = "zzzlarryReminderChannel";
+            String description = "Channel For Alarm Manager";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel("zzzlarry", name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
     public void rank(View v) {
@@ -317,6 +352,27 @@ public class MainActivity extends AppCompatActivity {
         Intent activityIntent = new Intent();
         activityIntent.setComponent(new ComponentName("com.a0soft.gphone.uninstaller", "com.a0soft.gphone.uninstaller.wnd.MainWnd"));
         startActivity(activityIntent);
+
+
+//        AlarmManager alarmManager;
+//        PendingIntent pendingIntent;
+//        Calendar calendar;
+//        calendar = Calendar.getInstance();
+//        calendar.set(Calendar.SECOND, calendar.get(Calendar.SECOND) + 5);
+//        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//        Intent intent = new Intent(this, AppUsageDetectReceiver.class);
+//        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+//        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+    }
+
+    public void startAppUsageDetect() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.SECOND, calendar.get(Calendar.SECOND) + 5);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AppUsageDetectReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 60000, pendingIntent);
+//        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
 
     @Override

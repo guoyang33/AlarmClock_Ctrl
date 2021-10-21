@@ -1,5 +1,6 @@
 package com.zzzlarry.reminder;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -10,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -125,6 +127,7 @@ public class Editt extends AppCompatActivity {
         Intent intent = new Intent();
 
         mAlarm.toIntent(intent);
+
         setResult(RESULT_OK, intent);
         finish();
     }
