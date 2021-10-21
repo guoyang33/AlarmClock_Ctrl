@@ -350,7 +350,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void checklack(View v) {
-        Uri uri = Uri.parse("http://120.108.111.131/App_2nd/Ctrl_daily/redirect.php?id=" + user_id);
+        Uri uri = Uri.parse("http://120.108.111.131/App_2nd/Ctrl_daily/check_lack.php?id=" + user_id);
         Intent i = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(i);
     }
