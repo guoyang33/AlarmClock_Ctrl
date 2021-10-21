@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String ACTION_NOTIFICATION_LISTENER_SETTINGS = "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS";
 
     Button btn_rank;
+    Button btn_checklack;
     Button btn_alltime;
     private final String TAG = "AlarmMe";
     public ListView mAlarmList;
@@ -110,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
         createNotificationChannel();
         
         btn_rank = findViewById(R.id.button_rank);
+        btn_checklack = findViewById(R.id.button_checklack);
         btn_alltime = findViewById(R.id.button_alltime);
         mAlarmList = (ListView) findViewById(R.id.alarm_list);
         mAlarmListAdapter = new AlarmListAdapter(this);
@@ -347,6 +349,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void checklack(View v) {
+        Uri uri = Uri.parse("http://120.108.111.131/App_2nd/Ctrl_daily/redirect.php?id=" + user_id);
+        Intent i = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(i);
+    }
 
     public void alltime(View v) {
         Intent activityIntent = new Intent();

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/AlarmClock_Ctrl.iml" filepath="$PROJECT_DIR$/AlarmClock_Ctrl.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/AlarmClock_Ctrl.iml" filepath="$PROJECT_DIR$/.idea/modules/AlarmClock_Ctrl.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/AlarmClock_Ctrl.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/AlarmClock_Ctrl.app.iml" />
     </modules>
   </component>
