@@ -43,6 +43,7 @@ public class AppUsageDetectReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         int notification_id = 112;
+        String silenceNotiChannelId = MainActivity.silenceNotiChannelId;
 
         if (appUsageIsRunning()) {
             Log.d(TAG, "App Usage is running.");
@@ -52,13 +53,13 @@ public class AppUsageDetectReceiver extends BroadcastReceiver {
             appUsageStatus = 0;
             Intent newIntent = new Intent(context, AppUsageLauncher.class);
             PendingIntent pi = PendingIntent.getActivity(context, 0, newIntent, 0);
-            Notification notification = new NotificationCompat.Builder(context, "zzzlarry")
+            Notification notification = new NotificationCompat.Builder(context, silenceNotiChannelId)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle("App Usage現在處於未運行狀態")
                 .setContentText("點擊這裡以啟動")
                 .setAutoCancel(true)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setContentIntent(pi)
                 .build();
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);

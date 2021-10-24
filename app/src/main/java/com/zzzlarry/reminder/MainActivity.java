@@ -61,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
     Button btn_checklack;
     Button btn_alltime;
     private final String TAG = "AlarmMe";
+    public static String alarmNotiChannelId = "notiChannelAlarm";
+    public static String silenceNotiChannelId = "notiChannelSilence";
     public ListView mAlarmList;
     private AlarmListAdapter mAlarmListAdapter;
     private Alarm mCurrentAlarm;
@@ -156,12 +158,12 @@ public class MainActivity extends AppCompatActivity {
                     "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
         }
         startAppUsageDetect();
+        startCheckQuesLack();
 
         //檢查是否取得權限
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
         //沒有權限時
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-
             ActivityCompat.requestPermissions(MainActivity.this,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     1);
@@ -224,15 +226,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             CharSequence name  = "zzzlarryReminderChannel";
             String description = "Channel For Alarm Manager";
             int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel channel = new NotificationChannel("zzzlarry", name, importance);
+            NotificationChannel channel = new NotificationChannel(alarmNotiChannelId, name, importance);
             channel.setDescription(description);
 
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
+
+            CharSequence name2 = "silenceNotiChannel";
+            String description2 = "Channel for silence notification";
+            int importance2 = NotificationManager.IMPORTANCE_LOW;
+            NotificationChannel channel2 = new NotificationChannel(silenceNotiChannelId, name2, importance2);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager2 = getSystemService(NotificationManager.class);
+            notificationManager2.createNotificationChannel(channel2);
         }
     }
 
@@ -272,6 +283,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    // 上傳csv至伺服器，每日匯出的csv儲存在/storage/emulated/0/AppUsage/export/daily/<日期>/<檔名>.csv
     private void doFileUpload(String date) throws FileNotFoundException {
         File folder1 = new File("/storage/emulated/0/AppUsage/export/daily/" + date + "/");
         String[] list1 = folder1.list();
@@ -286,7 +298,7 @@ public class MainActivity extends AppCompatActivity {
                     AsyncHttpClient client = new AsyncHttpClient();
                     Log.d("where", "Try to post file : " + s);
                     client.post(this, "http://120.108.111.131/App_2nd/receive_file_finish.php?id=" + user_id, params, new AsyncHttpResponseHandler() {
-                        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                        @RequiresApi(api = Build.VERSION_CODES.P)
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                             Log.d("where", s + " 傳送成功");
@@ -313,6 +325,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void GetDate() {
+        Log.d(TAG, "GetDate()");
         AsyncHttpClient client = new AsyncHttpClient();
         client.get("http://120.108.111.131/App_2nd/Data_MakeUp.php?uid=" + user_id, new TextHttpResponseHandler() {
             @Override
@@ -350,7 +363,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void checklack(View v) {
-        Uri uri = Uri.parse("http://120.108.111.131/App_2nd/Ctrl_daily/check_lack.php?id=" + user_id);
+        Uri uri = Uri.parse("http://120.108.111.131/App_2nd/Data_MakeUp1.php?uid=" + user_id);
         Intent i = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(i);
     }
@@ -359,27 +372,27 @@ public class MainActivity extends AppCompatActivity {
         Intent activityIntent = new Intent();
         activityIntent.setComponent(new ComponentName("com.a0soft.gphone.uninstaller", "com.a0soft.gphone.uninstaller.wnd.MainWnd"));
         startActivity(activityIntent);
-
-
-//        AlarmManager alarmManager;
-//        PendingIntent pendingIntent;
-//        Calendar calendar;
-//        calendar = Calendar.getInstance();
-//        calendar.set(Calendar.SECOND, calendar.get(Calendar.SECOND) + 5);
-//        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//        Intent intent = new Intent(this, AppUsageDetectReceiver.class);
-//        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
-//        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
 
-    public void startAppUsageDetect() {
+    private void startAppUsageDetect() {
+        Log.d(TAG, "call startAppUsageDetect()");
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.SECOND, calendar.get(Calendar.SECOND) + 5);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, AppUsageDetectReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 60000, pendingIntent);
-//        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+    }
+
+    public void startCheckQuesLack() {
+        Log.d(TAG, "call startCheckQuesLack()");
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.SECOND, calendar.get(Calendar.SECOND) + 10);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, CheckQuesLackReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 60000, pendingIntent); // 測試、間隔待調
+//        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 3600000, pendingIntent);
     }
 
     @Override

@@ -67,9 +67,9 @@ public class AlarmNotification extends Activity {
         AlarmReceiver.stop();
 
         getWindow().addFlags(
-                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
-                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+            WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+            WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+            WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
         mDateTime = new DateTime(this);
         mTextView = findViewById(R.id.alarm_title_text);
@@ -195,7 +195,7 @@ public class AlarmNotification extends Activity {
         public void run() {
             Log.i(TAG, "AlarmNotification.PalyTimerTask.run()");
             addNotification(mAlarm);
-            finish();
+//            finish();
         }
     }
 
@@ -240,6 +240,7 @@ public class AlarmNotification extends Activity {
 
 
     private void GetDate() {
+        Log.d(TAG, "GetDate()");
         AsyncHttpClient client = new AsyncHttpClient();
         client.get("http://120.108.111.131/App_2nd/Ctrl_daily/Data_MakeUp.php?uid=" + user_id, new TextHttpResponseHandler() {
             @Override

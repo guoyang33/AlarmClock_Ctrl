@@ -52,6 +52,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         int notification_id = 111;
+        String alarmNotiChannelId = MainActivity.alarmNotiChannelId;
 
         Date dNow = new Date();
         @SuppressLint("SimpleDateFormat") SimpleDateFormat ft = new SimpleDateFormat("HH");
@@ -72,6 +73,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             //daily notification
             newIntent = new Intent(context, AlarmNotification.class);
             Alarm alarm = new Alarm(context);
+
             alarm.fromIntent(intent);
             alarm.toIntent(newIntent);
             newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -88,7 +90,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
 
         PendingIntent pi = PendingIntent.getActivity(context, 0, newIntent, 0);
-        Notification notification = new NotificationCompat.Builder(context, "zzzlarry")
+        Notification notification = new NotificationCompat.Builder(context, alarmNotiChannelId)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle("Fiszy your Alarm is on")
