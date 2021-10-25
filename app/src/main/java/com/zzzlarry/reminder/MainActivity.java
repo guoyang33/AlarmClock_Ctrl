@@ -54,6 +54,7 @@ import static android.widget.Toast.LENGTH_LONG;
 
 public class MainActivity extends AppCompatActivity {
     static final String user_id = "user1092250";//user001-user100非網癮
+    static final String yearNo = "109"; // 計畫實施學年
 
     private static final String ACTION_NOTIFICATION_LISTENER_SETTINGS = "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS";
 
@@ -327,7 +328,7 @@ public class MainActivity extends AppCompatActivity {
     private void GetDate() {
         Log.d(TAG, "GetDate()");
         AsyncHttpClient client = new AsyncHttpClient();
-        client.get("http://120.108.111.131/App_2nd/Data_MakeUp.php?uid=" + user_id, new TextHttpResponseHandler() {
+        client.get("http://120.108.111.131/App_2nd/Data_MakeUp.php?id=" + user_id + "&yearno=" + yearNo, new TextHttpResponseHandler() {
             @Override
             public void onStart() {
                 // called before request is started
@@ -363,7 +364,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void checklack(View v) {
-        Uri uri = Uri.parse("http://120.108.111.131/App_2nd/Data_MakeUp1.php?uid=" + user_id);
+        Uri uri = Uri.parse("http://120.108.111.131/App_2nd/Data_MakeUp1.php?id=" + user_id);
         Intent i = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(i);
     }
