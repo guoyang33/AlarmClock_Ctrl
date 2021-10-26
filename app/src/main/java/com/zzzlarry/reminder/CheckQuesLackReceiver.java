@@ -30,7 +30,7 @@ public class CheckQuesLackReceiver extends BroadcastReceiver {
 
     public static boolean quesLack;
     private String userId = MainActivity.user_id;
-    private String yearNo = "109";
+    private String yearNo = MainActivity.yearNo;
 
 //    private NotificationManager notifications;
 

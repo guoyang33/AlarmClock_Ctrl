@@ -77,7 +77,8 @@ public class AppUsageDetectReceiver extends BroadcastReceiver {
 
                 try {
                     HttpClient httpClient = HttpClientBuilder.create().build();
-                    HttpGet get = new HttpGet("http://120.108.111.131/App_2nd/alarmclock_panel/app_status_update.php?user=" + userId + "&app_usage_status=" + appUsageStatus + "&send_time=" + sendTime);
+                    Log.d(TAG, "update uri: http://120.108.111.131/App_2nd/alarmclock_panel/app_status_update.php?id=" + userId + "&appstatus=" + appUsageStatus + "&sendtime=" + sendTime);
+                    HttpGet get = new HttpGet("http://120.108.111.131/App_2nd/alarmclock_panel/app_status_update.php?id=" + userId + "&appstatus=" + appUsageStatus + "&sendtime=" + sendTime);
                     HttpResponse response = httpClient.execute(get);
                     Log.d(TAG, "Update response code: " + response.getStatusLine().getStatusCode());
                 } catch (ClientProtocolException e) {

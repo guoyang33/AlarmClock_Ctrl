@@ -54,7 +54,7 @@ import static android.widget.Toast.LENGTH_LONG;
 
 public class MainActivity extends AppCompatActivity {
     static final String user_id = "user1092250";//user001-user100非網癮
-    static final String yearNo = "109"; // 計畫實施學年
+    static final String yearNo = "110"; // 計畫實施學年
 
     private static final String ACTION_NOTIFICATION_LISTENER_SETTINGS = "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS";
 
