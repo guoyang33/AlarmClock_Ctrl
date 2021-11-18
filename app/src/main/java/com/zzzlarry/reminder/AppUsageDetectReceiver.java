@@ -70,7 +70,7 @@ public class AppUsageDetectReceiver extends BroadcastReceiver {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String userId = MainActivity.user_id;
+                String userId = MainActivity.userId;
                 int appUsageStatus = AppUsageDetectReceiver.appUsageStatus;
                 long ts = System.currentTimeMillis();
                 String sendTime = Long.toString(ts);

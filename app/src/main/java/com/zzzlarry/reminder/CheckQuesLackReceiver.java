@@ -29,7 +29,7 @@ public class CheckQuesLackReceiver extends BroadcastReceiver {
     private static final String TAG = "CQLR";
 
     public static boolean quesLack;
-    private String userId = MainActivity.user_id;
+    private String userId = MainActivity.userId;
     private String yearNo = MainActivity.yearNo;
 
 //    private NotificationManager notifications;

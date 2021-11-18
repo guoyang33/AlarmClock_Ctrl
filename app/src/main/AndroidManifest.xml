@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.zzzlarry.reminder">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -24,7 +25,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:persistent="true">
+        android:persistent="true"
+        android:requestLegacyExternalStorage="true" >
 
         <receiver android:name=".BootReceiver">
             <intent-filter android:priority="1000">
@@ -58,6 +60,8 @@
         <activity
             android:name=".AppUsageDetector"
             android:label="App Usage Detector" />
+        <activity android:name=".AppUsageUploader"
+            android:label="App Usage Uploader" />
 
         <!--靜態註冊-->
         <receiver
@@ -78,6 +82,10 @@
             android:name=".CheckQuesLackReceiver"
             android:enabled="true">
         </receiver>
+
+        <receiver
+            android:name=".AppUsageUploaderReceiver"
+            android:enabled="true" />
 
         <activity
             android:name=".Editt"
