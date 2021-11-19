@@ -36,7 +36,7 @@ android {
                 signingConfig getSigningConfig()
                 applicationVariants.all { variant ->
                     variant.outputs.each{ output ->
-                        output.outputFileName = "健康上網自控APPv2-user1092250.apk"
+                        output.outputFileName = "健康上網自控APPv3-userA1101099.apk"
                                 //for Debug use output.outputFile = new File(output.outputFile.parent,
                                 //                             output.outputFile.name.replace("-debug", "-" + formattedDate)
 
