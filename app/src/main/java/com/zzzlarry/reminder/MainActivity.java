@@ -55,7 +55,7 @@ import static android.widget.Toast.LENGTH_LONG;
 
 public class MainActivity extends AppCompatActivity {
     static final String serverAddr = "http://120.108.111.131/";
-    static final String userId = "user1092250";//user001-user100非網癮
+    static final String userId = "user110A199";// {year} {A/I} {0/1/2/3} {no}
     static final String yearNo = "109"; // 計畫實施學年
 
     private static final String ACTION_NOTIFICATION_LISTENER_SETTINGS = "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS";
@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     1);
         } else {
-//            GetDate();
+            GetDate();
         }
         DH = new DBHelper(this);
         db = DH.getWritableDatabase();
@@ -385,17 +385,17 @@ public class MainActivity extends AppCompatActivity {
     private void startAppUsageUploader() {
         Log.d(TAG, "call startAppUsageUploader()");
         Calendar calendar = Calendar.getInstance();
-//        calendar.set(Calendar.HOUR, 19);
-//        calendar.set(Calendar.MINUTE, 0);
-//        calendar.set(Calendar.SECOND, 0);
-//        calendar.set(Calendar.MILLISECOND, 0);
-        calendar.set(Calendar.SECOND, calendar.get(Calendar.SECOND) + 5);
+        calendar.set(Calendar.HOUR, 19); // 3AM
+        calendar.set(Calendar.MINUTE, 30);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+//        calendar.set(Calendar.SECOND, calendar.get(Calendar.SECOND) + 5);
         Log.d("startAppUsageUploader()", "time: " + calendar.getTimeInMillis());
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, AppUsageUploaderReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 60000, pendingIntent);
-//        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 24*60*60*1000, pendingIntent);
+//        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 60000, pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 24*60*60*1000, pendingIntent);
     }
 
     private void startAppUsageDetect() {

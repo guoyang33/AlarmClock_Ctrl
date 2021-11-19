@@ -61,44 +61,44 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         Intent newIntent;
 
-        if ("03".equals(now_time)) {
-            newIntent = new Intent(context, MainActivity.class);
-            Alarm alarm = new Alarm(context);
-            alarm.fromIntent(intent);
-            alarm.toIntent(newIntent);
-            newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            String TAG = "AlarmMe";
-            Log.i(TAG, "AlarmReceiver.onReceive('" + alarm.getTitle() + "')");
-        } else {
+//        if ("03".equals(now_time)) {
+//            newIntent = new Intent(context, MainActivity.class);
+//            Alarm alarm = new Alarm(context);
+//            alarm.fromIntent(intent);
+//            alarm.toIntent(newIntent);
+//            newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//            String TAG = "AlarmMe";
+//            Log.i(TAG, "AlarmReceiver.onReceive('" + alarm.getTitle() + "')");
+//        } else {
             //daily notification
-            newIntent = new Intent(context, AlarmNotification.class);
-            Alarm alarm = new Alarm(context);
+        newIntent = new Intent(context, AlarmNotification.class);
+        Alarm alarm = new Alarm(context);
 
-            alarm.fromIntent(intent);
-            alarm.toIntent(newIntent);
-            newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            String TAG = "AlarmMe";
-            Log.i(TAG, "AlarmReceiver.onReceive('" + alarm.getTitle() + "')");
+        alarm.fromIntent(intent);
+        alarm.toIntent(newIntent);
+        newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        String TAG = "AlarmMe";
+        Log.i(TAG, "AlarmReceiver.onReceive('" + alarm.getTitle() + "')");
 
-            readPreferences(context);
-            mRingtone = RingtoneManager.getRingtone(context, mAlarmSound);
-            mRingtone.play();
+        readPreferences(context);
+        mRingtone = RingtoneManager.getRingtone(context, mAlarmSound);
+        mRingtone.play();
 
-            if (mVibrate)
-                mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-            mVibrator.vibrate(mVibratePattern, -1);
-        }
+        if (mVibrate)
+            mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        mVibrator.vibrate(mVibratePattern, -1);
+//        }
 
         PendingIntent pi = PendingIntent.getActivity(context, 0, newIntent, 0);
         Notification notification = new NotificationCompat.Builder(context, alarmNotiChannelId)
-                .setDefaults(NotificationCompat.DEFAULT_ALL)
-                .setSmallIcon(R.drawable.ic_launcher)
-                .setContentTitle("Fiszy your Alarm is on")
-                .setContentText("Click Me")
-                .setAutoCancel(true)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setContentIntent(pi)
-                .build();
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setSmallIcon(R.drawable.ic_launcher)
+            .setContentTitle("Fiszy your Alarm is on")
+            .setContentText("Click Me")
+            .setAutoCancel(true)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(pi)
+            .build();
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
         notificationManagerCompat.notify(notification_id, notification);
     }
