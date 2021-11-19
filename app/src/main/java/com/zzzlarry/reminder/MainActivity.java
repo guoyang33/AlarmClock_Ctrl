@@ -55,8 +55,8 @@ import static android.widget.Toast.LENGTH_LONG;
 
 public class MainActivity extends AppCompatActivity {
     static final String serverAddr = "http://120.108.111.131/";
-    static final String userId = "userA1101099";// {year} {A/I} {0/1/2/3} {no}
-    static final String yearNo = "109"; // 計畫實施學年
+    static final String userId = "A1101099";// {year} {A/I} {0/1/2/3} {no}
+    static final String yearNo = "110"; // 計畫實施學年
 
     private static final String ACTION_NOTIFICATION_LISTENER_SETTINGS = "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS";
 

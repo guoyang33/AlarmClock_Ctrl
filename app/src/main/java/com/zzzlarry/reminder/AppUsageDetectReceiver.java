@@ -70,6 +70,7 @@ public class AppUsageDetectReceiver extends BroadcastReceiver {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                String serverAddr = MainActivity.serverAddr;
                 String userId = MainActivity.userId;
                 int appUsageStatus = AppUsageDetectReceiver.appUsageStatus;
                 long ts = System.currentTimeMillis();
@@ -77,8 +78,9 @@ public class AppUsageDetectReceiver extends BroadcastReceiver {
 
                 try {
                     HttpClient httpClient = HttpClientBuilder.create().build();
-                    Log.d(TAG, "update uri: http://120.108.111.131/App_2nd/alarmclock_panel/app_status_update.php?id=" + userId + "&appstatus=" + appUsageStatus + "&sendtime=" + sendTime);
-                    HttpGet get = new HttpGet("http://120.108.111.131/App_2nd/alarmclock_panel/app_status_update.php?id=" + userId + "&appstatus=" + appUsageStatus + "&sendtime=" + sendTime);
+                    String uri = serverAddr + "/App_2nd/alarmclock_panel/app_status_update.php?id=" + userId + "&appstatus=" + appUsageStatus + "&sendtime=" + sendTime;
+                    Log.d(TAG, "update uri: " + uri);
+                    HttpGet get = new HttpGet(uri);
                     HttpResponse response = httpClient.execute(get);
                     Log.d(TAG, "Update response code: " + response.getStatusLine().getStatusCode());
                 } catch (ClientProtocolException e) {
