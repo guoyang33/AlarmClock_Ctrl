@@ -28,6 +28,8 @@ public class CheckQuesLackReceiver extends BroadcastReceiver {
 
     private static final String TAG = "CQLR";
 
+    private static final String serverAddr = MainActivity.serverAddr;
+
     public static boolean quesLack;
     private String userId = MainActivity.userId;
     private String yearNo = MainActivity.yearNo;
@@ -36,7 +38,7 @@ public class CheckQuesLackReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        int notification_id = 113;
+        int notificationId = 113;
         String silenceNotiChannelId = MainActivity.silenceNotiChannelId;
 
         Log.d(TAG, "Starting fetch questionnaire data");
@@ -46,8 +48,8 @@ public class CheckQuesLackReceiver extends BroadcastReceiver {
             public void run() {
                 try {
                     HttpClient httpClient = HttpClientBuilder.create().build();
-                    HttpGet get = new HttpGet("http://120.108.111.131/App_2nd/alarmclock_panel/get_ques_lack.php?id=" + userId + "&yearno=" + yearNo);
-//                    HttpGet get = new HttpGet("http://120.108.111.131/App_2nd/Ctrl_daily/check_ques_lack.php?id=user1092206&yearno=" + yearNo);
+                    String uri = serverAddr + "/App_2nd/daily/questionnaire_makeup.php?id=" + userId;
+                    HttpGet get = new HttpGet(uri + "&yearno=" + yearNo);
                     HttpResponse response = httpClient.execute(get);
                     String responseText = EntityUtils.toString(response.getEntity());
                     JSONObject obj = new JSONObject(responseText);
@@ -70,8 +72,8 @@ public class CheckQuesLackReceiver extends BroadcastReceiver {
         }).start();
 
         if (quesLack) {
-            Log.d(TAG, "posting noti...");
-            Uri uri = Uri.parse("http://120.108.111.131/App_2nd/alarmclock_panel/questionnaire_status.php?id=" + userId + "&yearno=" + yearNo);
+            Log.d(TAG, "Posting queslack notify...");
+            Uri uri = Uri.parse(serverAddr + "/App_2nd/daily/questionnaire_show.php?id=" + userId);
             Intent newIntent = new Intent(Intent.ACTION_VIEW, uri);
             PendingIntent pi = PendingIntent.getActivity(context, 0, newIntent, 0);
             Notification notification = new NotificationCompat.Builder(context, silenceNotiChannelId)
@@ -84,7 +86,7 @@ public class CheckQuesLackReceiver extends BroadcastReceiver {
                     .setContentIntent(pi)
                     .build();
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
-            notificationManagerCompat.notify(notification_id, notification);
+            notificationManagerCompat.notify(notificationId, notification);
         }
     }
 

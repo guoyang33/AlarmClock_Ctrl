@@ -44,15 +44,6 @@
                 android:text="使用規則" />
 
             <Button
-                android:id="@+id/button_checklack"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:onClick="checklack"
-                android:text="檢示未上傳" />
-
-
-            <Button
                 android:id="@+id/button_alltime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -54,8 +54,8 @@ import static android.widget.Toast.LENGTH_LONG;
 
 
 public class MainActivity extends AppCompatActivity {
-    static final String serverAddr = "http://120.108.111.131/";
-    static final String userId = "A1101099";// {year} {A/I} {0/1/2/3} {no}
+    static final String serverAddr = "http://120.108.111.131";
+    static final String userId = "A1101199"; // 編號規則：{Ios / Android} {year} {1:成癮 | 2:非成癮} {目標 / 信息} {流水號}
     static final String yearNo = "110"; // 計畫實施學年
 
     private static final String ACTION_NOTIFICATION_LISTENER_SETTINGS = "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS";
@@ -116,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
         createNotificationChannel();
         
         btn_rank = findViewById(R.id.button_rank);
-        btn_checklack = findViewById(R.id.button_checklack);
         btn_alltime = findViewById(R.id.button_alltime);
         mAlarmList = (ListView) findViewById(R.id.alarm_list);
         mAlarmListAdapter = new AlarmListAdapter(this);
@@ -161,10 +160,6 @@ public class MainActivity extends AppCompatActivity {
                     "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
         }
 
-        startAppUsageUploader();
-        startAppUsageDetect();
-        startCheckQuesLack();
-
         //檢查是否取得權限
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
         //沒有權限時
@@ -173,6 +168,9 @@ public class MainActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     1);
         } else {
+            startAppUsageUploader();
+            startAppUsageDetect();
+            startCheckQuesLack();
             GetDate();
         }
         DH = new DBHelper(this);
@@ -253,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void rank(View v) {
-        Uri uri = Uri.parse("http://120.108.111.131/App_2nd/Ctrl_daily/redirect.php?id=" + userId);
+        Uri uri = Uri.parse(serverAddr + "/App_2nd/daily/redirect.php?id=" + userId);
         Intent i = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(i);
     }
@@ -302,7 +300,8 @@ public class MainActivity extends AppCompatActivity {
                     params.put("uploadedfile", myFile, "text/csv");
                     AsyncHttpClient client = new AsyncHttpClient();
                     Log.d("where", "Try to post file : " + s);
-                    client.post(this, "http://120.108.111.131/App_2nd/receive_file_finish.php?id=" + userId, params, new AsyncHttpResponseHandler() {
+                    String url = serverAddr + "/App_2nd/receive_file_finish.php?id=" + userId;
+                    client.post(this, url, params, new AsyncHttpResponseHandler() {
                         @RequiresApi(api = Build.VERSION_CODES.P)
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -332,7 +331,8 @@ public class MainActivity extends AppCompatActivity {
     private void GetDate() {
         Log.d(TAG, "GetDate()");
         AsyncHttpClient client = new AsyncHttpClient();
-        client.get("http://120.108.111.131/App_2nd/Data_MakeUp.php?id=" + userId + "&yearno=" + yearNo, new TextHttpResponseHandler() {
+        String url = serverAddr + "/App_2nd/daily/data_makeup.php?id=" + userId;
+        client.get(url, new TextHttpResponseHandler() {
             @Override
             public void onStart() {
                 // called before request is started
@@ -370,12 +370,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void checklack(View v) {
-        Uri uri = Uri.parse("http://120.108.111.131/App_2nd/Data_MakeUp1.php?id=" + userId);
-        Intent i = new Intent(Intent.ACTION_VIEW, uri);
-        startActivity(i);
-    }
-
     public void alltime(View v) {
         Intent activityIntent = new Intent();
         activityIntent.setComponent(new ComponentName("com.a0soft.gphone.uninstaller", "com.a0soft.gphone.uninstaller.wnd.MainWnd"));
@@ -385,17 +379,14 @@ public class MainActivity extends AppCompatActivity {
     private void startAppUsageUploader() {
         Log.d(TAG, "call startAppUsageUploader()");
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR, 19); // 3AM
-        calendar.set(Calendar.MINUTE, 30);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-//        calendar.set(Calendar.SECOND, calendar.get(Calendar.SECOND) + 5);
+        calendar.set(Calendar.MINUTE, calendar.get(Calendar.MINUTE) + 3);
+//        calendar.set(Calendar.HOUR, calendar.get(Calendar.HOUR) + 12);
         Log.d("startAppUsageUploader()", "time: " + calendar.getTimeInMillis());
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, AppUsageUploaderReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
-//        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 60000, pendingIntent);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 24*60*60*1000, pendingIntent);
+//        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 12*60*60*1000, pendingIntent); // 12Hours
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 3*60*1000, pendingIntent);
     }
 
     private void startAppUsageDetect() {

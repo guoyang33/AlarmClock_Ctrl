@@ -42,8 +42,10 @@ import cz.msebera.android.httpclient.Header;
 import static android.widget.Toast.LENGTH_LONG;
 
 public class AlarmNotification extends Activity {
-    final String user_id = "user1092250";//user1091101-user1091150、user1092101~user1092150非網癮
-                                         //user1091201-user1091250、user1092201~user1092250網癮
+
+    private final String serverAddr = MainActivity.serverAddr;
+    private final String user_id = MainActivity.userId;
+
     private final String TAG = "AlarmMe";
     private Ringtone mRingtone;
     private Vibrator mVibrator;
@@ -75,17 +77,6 @@ public class AlarmNotification extends Activity {
         mTextView = findViewById(R.id.alarm_title_text);
         //set up notification manager
         NotificationManager notify_manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-        //make notification parameter
-//        Notification notification_popup = null;
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-//            notification_popup = new Builder(this, "zzzlarry")
-//                    .setContentTitle("Fiszy your Alarm is on")
-//                    .setContentText("Click Me")
-//                    .setAutoCancel(true)
-//                    .setSmallIcon(R.drawable.ic_launcher)
-//                    .build();
-//        }
         readPreferences();
 
         mRingtone = RingtoneManager.getRingtone(getApplicationContext(), mAlarmSound);
@@ -95,7 +86,8 @@ public class AlarmNotification extends Activity {
 //        notify_manager.notify(0, notification_popup);
         start(getIntent());
         WebView tota = findViewById(R.id.total);
-        tota.loadUrl("http://120.108.111.131/App_2nd/Ctrl_daily/redirect.php?id=" + user_id);
+        String url = serverAddr + "/App_2nd/daily/redirect.php?id=" + user_id;
+        tota.loadUrl(url);
         GetDate();
     }
 
@@ -212,7 +204,8 @@ public class AlarmNotification extends Activity {
                     params.put("uploadedfile", myFile, "text/csv");
                     AsyncHttpClient client = new AsyncHttpClient();
                     Log.d("where", "Try to post file : " + s);
-                    client.post(this, "http://120.108.111.131/App_2nd/receive_file_finish.php?id=" + user_id, params, new AsyncHttpResponseHandler() {
+                    String url = serverAddr + "/App_2nd/receive_file_finish.php?id=" + user_id;
+                    client.post(this, url, params, new AsyncHttpResponseHandler() {
                         @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -242,7 +235,8 @@ public class AlarmNotification extends Activity {
     private void GetDate() {
         Log.d(TAG, "GetDate()");
         AsyncHttpClient client = new AsyncHttpClient();
-        client.get("http://120.108.111.131/App_2nd/Ctrl_daily/Data_MakeUp.php?uid=" + user_id, new TextHttpResponseHandler() {
+        String url = serverAddr + "/App_2nd/daily/data_makeup.php?id=" + user_id;
+        client.get(url, new TextHttpResponseHandler() {
             @Override
             public void onStart() {
                 // called before request is started

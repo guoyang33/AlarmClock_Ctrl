@@ -51,26 +51,10 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        int notification_id = 111;
+        int notificationId = 111;
         String alarmNotiChannelId = MainActivity.alarmNotiChannelId;
 
-        Date dNow = new Date();
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat ft = new SimpleDateFormat("HH");
-        String now_time = ft.format(dNow);
-        Log.d("where", now_time);
-
         Intent newIntent;
-
-//        if ("03".equals(now_time)) {
-//            newIntent = new Intent(context, MainActivity.class);
-//            Alarm alarm = new Alarm(context);
-//            alarm.fromIntent(intent);
-//            alarm.toIntent(newIntent);
-//            newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//            String TAG = "AlarmMe";
-//            Log.i(TAG, "AlarmReceiver.onReceive('" + alarm.getTitle() + "')");
-//        } else {
-            //daily notification
         newIntent = new Intent(context, AlarmNotification.class);
         Alarm alarm = new Alarm(context);
 
@@ -86,7 +70,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         if (mVibrate)
             mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        mVibrator.vibrate(mVibratePattern, -1);
+            mVibrator.vibrate(mVibratePattern, -1);
 //        }
 
         PendingIntent pi = PendingIntent.getActivity(context, 0, newIntent, 0);
@@ -100,7 +84,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             .setContentIntent(pi)
             .build();
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
-        notificationManagerCompat.notify(notification_id, notification);
+        notificationManagerCompat.notify(notificationId, notification);
     }
 
     private void readPreferences(Context context) {

@@ -1,11 +1,16 @@
 package com.zzzlarry.reminder;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Looper;
 import android.provider.ContactsContract;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -39,12 +44,11 @@ public class AppUsageUploaderReceiver extends BroadcastReceiver {
     private static String yearNo = MainActivity.yearNo;
     private static String userId = MainActivity.userId;
 
-    static String[] makeupList;
+    public static String makeupContents;
 
     @Override
     public void onReceive(final Context context, Intent intent) {
-        // start fetching data makeup
-        Log.d(TAG, "fetching data_makeup");
+        Log.d(TAG, "Fetching make up date...");
 
         new Thread(new Runnable() {
             @Override
@@ -55,15 +59,19 @@ public class AppUsageUploaderReceiver extends BroadcastReceiver {
 
                 try {
                     HttpClient httpClient = HttpClientBuilder.create().build();
-                    String uri = serverAddr + "App_2nd/Data_MakeUp.php?id=" + userId + "&yearno=" + yearNo;
+                    String uri = serverAddr + "/App_2nd/daily/data_makeup.php?id=" + userId;
                     Log.d(TAG, "Uri: " + uri);
                     HttpGet get = new HttpGet(uri);
                     HttpResponse response = httpClient.execute(get);
-                    String responseText = EntityUtils.toString(response.getEntity());
-                    Log.d(TAG, "Update response code: " + response.getStatusLine().getStatusCode());
-                    Log.d(TAG, "Contents: " + responseText);
-                    if (!"".equals(response)) {
-                        makeupList = responseText.split("<br>");
+                    String contents = EntityUtils.toString(response.getEntity());
+                    AppUsageUploader.makeupDateText = contents;
+                    AppUsageUploaderReceiver.makeupContents = contents;
+                    Log.d(TAG, "Fetch response code: " + response.getStatusLine().getStatusCode());
+                    Log.d(TAG, "MakeUp Contents: " + contents);
+                    Log.d(TAG, "Not empty: " + !"".equals(contents));
+                    if (!"".equals(contents)) {
+                        Log.d(TAG, "Pushing makeup notify...");
+                        AppUsageUploaderReceiver.pushMakeupNoti(context);
                     }
                 } catch (ClientProtocolException e) {
                     e.printStackTrace();
@@ -72,59 +80,25 @@ public class AppUsageUploaderReceiver extends BroadcastReceiver {
                 }
             }
         }).start();
-
-        if (makeupList != null) {
-            for (String s : makeupList) {
-                try {
-                    doFileUpload(context, s);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 
-    // 上傳csv至伺服器，每日匯出的csv儲存在/storage/emulated/0/AppUsage/export/daily/<日期>/<檔名>.csv
-    private void doFileUpload(Context context, String date) throws FileNotFoundException {
-        File folder1 = new File("/storage/emulated/0/AppUsage/export/daily/" + date + "/");
-        String[] list1 = folder1.list();
-        String iscsv;
-        if (list1 != null) {
-            Log.d(TAG, "folder1: " + folder1.toPath());
-            Log.d(TAG, "length: " + list1.length);
-            for (final String s : list1) {
-                Log.d(TAG, "s: " + s);
-                iscsv = s.substring(s.lastIndexOf("."));
-                if (iscsv.equals(".csv")) {
-                    File myFile = new File("/storage/emulated/0/AppUsage/export/daily/" + date + "/" + s);
-                    Log.d(TAG, "file: " + myFile.toString());
-                    RequestParams params = new RequestParams();
-                    params.put("uploadedfile", myFile, "text/csv");
-                    AsyncHttpClient client = new AsyncHttpClient();
-                    Log.d("where", "Try to post file : " + s);
-                    client.post(context, "http://120.108.111.131/App_2nd/receive_file_finish.php?id=" + userId, params, new AsyncHttpResponseHandler() {
-                        @RequiresApi(api = Build.VERSION_CODES.P)
-                        @Override
-                        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                            Log.d("where", s + " 傳送成功");
-                            String content = new String(responseBody);
-//                            Toast.makeText(MainActivity.this, "今日資料已上傳" + content, LENGTH_LONG).show();
-                        }
+    public static void pushMakeupNoti(Context context) {
+        int notificationId = 114;
+        String silenceNotiChannelId = MainActivity.silenceNotiChannelId;
 
-                        @Override
-                        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                            Log.d("where", s + " 傳送失敗");
-                            String content = new String(responseBody);
-//                            Toast.makeText(MainActivity.this, "上傳失敗!" + content, LENGTH_LONG).show();
-                        }
-
-                    });
-                }
-            }
-        } else {
-            Log.d("where", "無此資料夾");
-        }
-
+        Intent newIntent = new Intent(context, AppUsageUploader.class);
+        PendingIntent pi = PendingIntent.getActivity(context, 0, newIntent, 0);
+        Notification notification = new NotificationCompat.Builder(context, silenceNotiChannelId)
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setContentTitle("尚有資料未上傳")
+                .setContentText("點擊這裡進行上傳作業")
+                .setAutoCancel(true)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setContentIntent(pi)
+                .build();
+        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
+        notificationManagerCompat.notify(notificationId, notification);
     }
 
 }

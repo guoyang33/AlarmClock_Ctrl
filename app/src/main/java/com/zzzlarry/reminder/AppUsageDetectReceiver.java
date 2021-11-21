@@ -42,7 +42,7 @@ public class AppUsageDetectReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        int notification_id = 112;
+        int notificationId = 112;
         String silenceNotiChannelId = MainActivity.silenceNotiChannelId;
 
         if (appUsageIsRunning()) {
@@ -63,7 +63,7 @@ public class AppUsageDetectReceiver extends BroadcastReceiver {
                 .setContentIntent(pi)
                 .build();
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
-            notificationManagerCompat.notify(notification_id, notification);
+            notificationManagerCompat.notify(notificationId, notification);
         }
 
         Log.d(TAG, "Updating AU status data to server...");
@@ -78,7 +78,7 @@ public class AppUsageDetectReceiver extends BroadcastReceiver {
 
                 try {
                     HttpClient httpClient = HttpClientBuilder.create().build();
-                    String uri = serverAddr + "/App_2nd/alarmclock_panel/app_status_update.php?id=" + userId + "&appstatus=" + appUsageStatus + "&sendtime=" + sendTime;
+                    String uri = serverAddr + "/App_2nd/app_status_update.php?id=" + userId + "&appstatus=" + appUsageStatus + "&sendtime=" + sendTime;
                     Log.d(TAG, "update uri: " + uri);
                     HttpGet get = new HttpGet(uri);
                     HttpResponse response = httpClient.execute(get);
