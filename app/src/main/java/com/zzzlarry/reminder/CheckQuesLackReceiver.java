@@ -32,7 +32,6 @@ public class CheckQuesLackReceiver extends BroadcastReceiver {
 
     public static boolean quesLack;
     private String userId = MainActivity.userId;
-    private String yearNo = MainActivity.yearNo;
 
 //    private NotificationManager notifications;
 
@@ -49,7 +48,7 @@ public class CheckQuesLackReceiver extends BroadcastReceiver {
                 try {
                     HttpClient httpClient = HttpClientBuilder.create().build();
                     String uri = serverAddr + "/App_2nd/daily/questionnaire_makeup.php?id=" + userId;
-                    HttpGet get = new HttpGet(uri + "&yearno=" + yearNo);
+                    HttpGet get = new HttpGet(uri);
                     HttpResponse response = httpClient.execute(get);
                     String responseText = EntityUtils.toString(response.getEntity());
                     JSONObject obj = new JSONObject(responseText);

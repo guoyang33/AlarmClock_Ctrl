@@ -38,7 +38,6 @@ public class AppUsageUploader extends Activity {
     private String TAG = "AUU";
 
     private String serverAddr = MainActivity.serverAddr;
-    private String yearNo = MainActivity.yearNo;
     private String userId = MainActivity.userId;
 
     public static String makeupDateText;
@@ -112,7 +111,6 @@ public class AppUsageUploader extends Activity {
                     @Override
                     public void run() {
                         String serverAddr = MainActivity.serverAddr;
-                        String yearNo = MainActivity.yearNo;
                         String userId = MainActivity.userId;
 
                         try {

@@ -41,7 +41,6 @@ public class AppUsageUploaderReceiver extends BroadcastReceiver {
     private static final String TAG = "AUUR";
 
     private static String serverAddr = MainActivity.serverAddr;
-    private static String yearNo = MainActivity.yearNo;
     private static String userId = MainActivity.userId;
 
     public static String makeupContents;
@@ -54,7 +53,6 @@ public class AppUsageUploaderReceiver extends BroadcastReceiver {
             @Override
             public void run() {
                 String serverAddr = MainActivity.serverAddr;
-                String yearNo = MainActivity.yearNo;
                 String userId = MainActivity.userId;
 
                 try {
