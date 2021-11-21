@@ -115,7 +115,7 @@ public class AppUsageUploader extends Activity {
 
                         try {
                             HttpClient httpClient = HttpClientBuilder.create().build();
-                            String uri = serverAddr + "/App_2nd/makeup_cancel.php?id=" + userId + "&date=" + date;
+                            String uri = serverAddr + "/App_2nd/daily/data_makeup_cancel.php?id=" + userId + "&date=" + date;
                             Log.d(TAG, "Uri: " + uri);
                             HttpGet get = new HttpGet(uri);
                             httpClient.execute(get);
