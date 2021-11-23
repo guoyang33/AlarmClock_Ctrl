@@ -78,7 +78,7 @@ public class AppUsageDetectReceiver extends BroadcastReceiver {
 
                 try {
                     HttpClient httpClient = HttpClientBuilder.create().build();
-                    String uri = serverAddr + "/App_2nd/app_status_update.php?id=" + userId + "&appstatus=" + appUsageStatus + "&sendtime=" + sendTime;
+                    String uri = serverAddr + "/App_2nd/daily/app_status_update.php?id=" + userId + "&appstatus=" + appUsageStatus + "&sendtime=" + sendTime;
                     Log.d(TAG, "update uri: " + uri);
                     HttpGet get = new HttpGet(uri);
                     HttpResponse response = httpClient.execute(get);
